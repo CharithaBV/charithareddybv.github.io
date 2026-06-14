@@ -104,7 +104,7 @@
             transition: background-color 0.2s;
         }
         .dropdown-content a:hover { background-color: rgba(15, 23, 42, 0.05); color: #0f172a; }
-        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content.show { display: block; }
 
         footer { margin-top: 4rem; font-size: 0.85rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 1.5rem; }
     </style>
@@ -225,15 +225,38 @@
     <script>
         const topBar = document.getElementById('top-bar');
         const mainName = document.getElementById('main-name');
+        const dropbtn = document.querySelector('.dropbtn');
+        const dropdownContent = document.querySelector('.dropdown-content');
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (!entry.isIntersecting) topBar.classList.add('visible');
-                else topBar.classList.remove('visible');
+                if (!entry.isIntersecting) {
+                    topBar.classList.add('visible');
+                } else {
+                    topBar.classList.remove('visible');
+                    dropdownContent.classList.remove('show');
+                }
             });
         }, { threshold: 0 });
 
         observer.observe(mainName);
+
+        dropbtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownContent.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!dropdownContent.contains(e.target) && !dropbtn.contains(e.target)) {
+                dropdownContent.classList.remove('show');
+            }
+        });
+
+        dropdownContent.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                dropdownContent.classList.remove('show');
+            });
+        });
     </script>
 </body>
 </html>
